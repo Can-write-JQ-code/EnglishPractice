@@ -204,22 +204,20 @@
                 <!-- 复习模式 -->
                 <div id="reviewMode" class="review-mode">
                     <div class="review-card">
-                        <div class="review-word" id="reviewWord">Loading...</div>
+                        <div class="review-word" id="reviewWord"></div>
                         <div class="review-meaning" id="reviewMeaning"></div>
-                        <button id="showMeaningBtn" class="btn">显示中文</button>
                         <div class="review-info" id="reviewInfo"></div>
-                    </div>
-                    
-                    <div class="review-controls">
-                        <button id="prevWordBtn" class="btn">上一个</button>
-                        <button id="nextWordBtn" class="btn">下一个</button>
-                        <button id="exitReviewBtn" class="btn">退出复习</button>
-                    </div>
-                    
-                    <div class="review-progress">
-                        <div id="reviewProgressText">0/0</div>
-                        <div class="review-progress-bar">
-                            <div id="reviewProgressFill" class="review-progress-fill"></div>
+                        <div class="review-controls">
+                            <button class="btn" id="prevWordBtn">上一个</button>
+                            <button class="btn" id="showMeaningBtn">显示中文</button>
+                            <button class="btn" id="nextWordBtn">下一个</button>
+                            <button class="btn" id="exitReviewBtn">退出复习</button>
+                        </div>
+                        <div class="review-progress">
+                            <div id="reviewProgressText"></div>
+                            <div class="review-progress-bar">
+                                <div class="review-progress-fill" id="reviewProgressFill"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -323,14 +321,19 @@
                 const startReviewBtn = document.getElementById('startReviewBtn');
                 const reviewContainer = document.getElementById('reviewContainer');
                 const tableContainer = document.getElementById('tableContainer');
+                const reviewMode = document.getElementById('reviewMode');
+                const tableMode = document.getElementById('tableMode');
                 const reviewWord = document.getElementById('reviewWord');
                 const reviewMeaning = document.getElementById('reviewMeaning');
-                const reviewProgress = document.getElementById('reviewProgress');
+                const reviewInfo = document.getElementById('reviewInfo');
+                const reviewProgressText = document.getElementById('reviewProgressText');
+                const reviewProgressFill = document.getElementById('reviewProgressFill');
                 const nextWordBtn = document.getElementById('nextWordBtn');
                 const prevWordBtn = document.getElementById('prevWordBtn');
-                const toggleMeaningBtn = document.getElementById('toggleMeaningBtn');
+                const showMeaningBtn = document.getElementById('showMeaningBtn');
                 const exitReviewBtn = document.getElementById('exitReviewBtn');
                 const addSampleWordsBtn = document.getElementById('addSampleWordsBtn');
+                const toggleTableBtn = document.getElementById('toggleTableBtn');
                 
                 // 初始加载
                 loadLearnedWords();
@@ -393,12 +396,20 @@
                     }
                 });
                 
-                toggleMeaningBtn.addEventListener('click', function() {
+                showMeaningBtn.addEventListener('click', function() {
                     toggleMeaning();
                 });
                 
                 exitReviewBtn.addEventListener('click', function() {
                     exitReviewMode();
+                });
+                
+                toggleTableBtn.addEventListener('click', function() {
+                    if (reviewMode.style.display === 'block') {
+                        exitReviewMode();
+                    } else {
+                        startReviewMode();
+                    }
                 });
                 
                 // 添加示例单词按钮事件
