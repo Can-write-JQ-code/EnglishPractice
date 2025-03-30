@@ -1,0 +1,357 @@
+/* 全局样式 */
+:root {
+    --primary-color: #333333;
+    --secondary-color: #666666;
+    --accent-color: #999999;
+    --background-color: #f5f5f5;
+    --text-color: #333333;
+    --border-color: #dddddd;
+    --success-color: #4CAF50;
+    --error-color: #F44336;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+}
+
+header p {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+}
+
+/* 导航栏样式 */
+nav {
+    margin: 20px 0;
+}
+
+nav ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+nav li {
+    margin: 0 5px;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--secondary-color);
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+nav a:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+nav a.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.back-btn {
+    position: absolute;
+    left: 0;
+    top: 10px;
+    text-decoration: none;
+    color: var(--secondary-color);
+    padding: 5px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.back-btn:hover {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+main {
+    flex: 1;
+}
+
+footer {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+/* 首页样式 */
+.feature-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    width: 320px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+    color: var(--primary-color);
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+}
+
+.card p {
+    color: var(--secondary-color);
+    margin-bottom: 25px;
+    height: 80px;
+}
+
+.btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
+    font-size: 1rem;
+}
+
+.btn:hover {
+    background-color: #222222;
+}
+
+/* 模块页面通用样式 */
+.module-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+}
+
+/* 认识单词模块样式 */
+.word-display {
+    text-align: center;
+}
+
+#word-container {
+    margin-bottom: 40px;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-color);
+}
+
+#word {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+}
+
+#meaning {
+    font-size: 1.8rem;
+    color: var(--secondary-color);
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.switch-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.icon {
+    margin-right: 5px;
+}
+
+/* 单词填空模块样式 */
+.word-filling {
+    text-align: center;
+}
+
+.blanks-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.blank-input {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 1.5rem;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.blank-input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.blank-input.error {
+    border-color: var(--error-color);
+    background-color: rgba(244, 67, 54, 0.1);
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.result-container {
+    margin-top: 30px;
+    padding: 15px;
+    border-radius: 4px;
+    display: none;
+}
+
+.success {
+    background-color: rgba(76, 175, 80, 0.1);
+    border: 1px solid var(--success-color);
+    color: var(--success-color);
+}
+
+.error {
+    background-color: rgba(244, 67, 54, 0.1);
+    border: 1px solid var(--error-color);
+    color: var(--error-color);
+}
+
+.stats-container {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 30px;
+    font-size: 1.1rem;
+}
+
+/* 中文盲打模块样式 */
+.chinese-typing {
+    text-align: center;
+}
+
+#meaning-container {
+    margin-bottom: 30px;
+    padding: 30px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--background-color);
+}
+
+.input-container {
+    margin-bottom: 30px;
+}
+
+#answer-input {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.5rem;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    text-align: center;
+}
+
+.timer-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#timer-display {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .feature-cards {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .card {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    #word {
+        font-size: 2.5rem;
+    }
+    
+    #meaning {
+        font-size: 1.5rem;
+    }
+}

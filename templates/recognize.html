@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>认识单词 - 英语练习应用</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>认识单词</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">首页</a></li>
+                    <li><a href="/recognize" class="active">认识单词</a></li>
+                    <li><a href="/filling">单词填空</a></li>
+                    <li><a href="/typing">中文盲打</a></li>
+                    <li><a href="/review">单词复习</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main class="module-container">
+            <div class="word-display">
+                <div id="word-container">
+                    <h2 id="word">Loading...</h2>
+                    <p id="meaning">加载中...</p>
+                </div>
+                
+                <div class="controls">
+                    <button id="play-btn" class="btn">
+                        <span class="icon">朗读</span> 
+                    </button>
+                    <button id="next-btn" class="btn">下一个单词</button>
+                    <div class="switch-container">
+                        <label for="auto-switch">自动切换：</label>
+                        <input type="checkbox" id="auto-switch">
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 英语练习应用 | 黑白灰简约风格</p>
+        </footer>
+    </div>
+    
+    <audio id="word-audio" style="display: none;"></audio>
+    
+    <script src="{{ url_for('static', filename='js/recognize.js') }}"></script>
+</body>
+</html>

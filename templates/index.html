@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语练习应用</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>英语练习应用</h1>
+            <p>提升您的英语单词学习效果</p>
+        </header>
+        
+        <main>
+            <div class="feature-cards">
+                <div class="card" onclick="location.href='/recognize'">
+                    <h2>认识单词</h2>
+                    <p>随机展示英语单词及其对应的中文释义，帮助您熟悉单词及其含义</p>
+                    <div class="btn">开始练习</div>
+                </div>
+                
+                <div class="card" onclick="location.href='/filling'">
+                    <h2>单词填空</h2>
+                    <p>随机给出部分字母缺失的英语单词，填写缺失字母，提升拼写能力</p>
+                    <div class="btn">开始练习</div>
+                </div>
+                
+                <div class="card" onclick="location.href='/typing'">
+                    <h2>中文盲打</h2>
+                    <p>显示中文释义，输入对应的英语单词，提高单词记忆和拼写能力</p>
+                    <div class="btn">开始练习</div>
+                </div>
+                
+                <div class="card" onclick="location.href='/review'">
+                    <h2>单词复习</h2>
+                    <p>查看和复习您已经学习过的单词，巩固记忆，提高学习效果</p>
+                    <div class="btn">开始复习</div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 英语练习应用 | 黑白灰简约风格</p>
+        </footer>
+    </div>
+</body>
+</html>

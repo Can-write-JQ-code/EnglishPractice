@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单词填空 - 英语练习应用</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>单词填空</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">首页</a></li>
+                    <li><a href="/recognize">认识单词</a></li>
+                    <li><a href="/filling" class="active">单词填空</a></li>
+                    <li><a href="/typing">中文盲打</a></li>
+                    <li><a href="/review">单词复习</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main class="module-container">
+            <div class="word-filling">
+                <div id="word-container">
+                    <h2 id="word-with-blanks">Loading...</h2>
+                    <p id="meaning">加载中...</p>
+                </div>
+                
+                <div id="blanks-container" class="blanks-container">
+                    <!-- 动态生成的填空输入框将在这里显示 -->
+                </div>
+                
+                <div class="controls">
+                    <button id="submit-btn" class="btn">提交答案</button>
+                    <button id="next-btn" class="btn">下一个单词</button>
+                </div>
+                
+                <div id="result-container" class="result-container">
+                    <p id="result-message"></p>
+                    <p id="correct-answer"></p>
+                </div>
+                
+                <div class="stats-container">
+                    <p>正确: <span id="correct-count">0</span></p>
+                    <p>错误: <span id="wrong-count">0</span></p>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 英语练习应用 | 黑白灰简约风格</p>
+        </footer>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/filling.js') }}"></script>
+</body>
+</html>

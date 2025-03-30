@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>英语练习 - 单词复习</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        .review-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .filters {
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .word-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .word-table th, .word-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .word-table th {
+            background-color: #f2f2f2;
+            cursor: pointer;
+        }
+        
+        .word-table th:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .word-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        
+        .pagination button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 20px;
+            font-style: italic;
+            color: #666;
+        }
+        
+        .empty-message {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .word-count {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .delete-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 5px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .delete-btn:hover {
+            background-color: #ff3333;
+        }
+        
+        .clear-all-btn {
+            background-color: #ff4d4d;
+            color: white;
+        }
+        
+        .clear-all-btn:hover {
+            background-color: #ff3333;
+        }
+        
+        .sort-icon {
+            margin-left: 5px;
+        }
+        
+        .review-mode {
+            display: none;
+            margin-top: 20px;
+        }
+        
+        .review-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .review-word {
+            font-size: 2em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .review-meaning {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #666;
+            display: none;
+        }
+        
+        .review-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .review-info {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .review-progress {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .review-progress-bar {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .review-progress-fill {
+            height: 100%;
+            background-color: #4CAF50;
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>单词复习</h1>
+            <nav>
+                <ul>
+                    <li><a href="/">首页</a></li>
+                    <li><a href="/recognize">认识单词</a></li>
+                    <li><a href="/filling">单词填空</a></li>
+                    <li><a href="/typing">中文盲打</a></li>
+                    <li><a href="/review" class="active">单词复习</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <main>
+            <div class="review-container">
+                <h2>单词复习</h2>
+                
+                <div class="actions">
+                    <button id="startReviewBtn" class="btn">开始复习</button>
+                    <button id="toggleTableBtn" class="btn">查看学习记录</button>
+                    <button id="clearAllBtn" class="btn clear-all-btn">清空所有记录</button>
+                </div>
+                
+                <!-- 复习模式 -->
+                <div id="reviewMode" class="review-mode">
+                    <div class="review-card">
+                        <div class="review-word" id="reviewWord">Loading...</div>
+                        <div class="review-meaning" id="reviewMeaning"></div>
+                        <button id="showMeaningBtn" class="btn">显示中文</button>
+                        <div class="review-info" id="reviewInfo"></div>
+                    </div>
+                    
+                    <div class="review-controls">
+                        <button id="prevWordBtn" class="btn">上一个</button>
+                        <button id="nextWordBtn" class="btn">下一个</button>
+                        <button id="exitReviewBtn" class="btn">退出复习</button>
+                    </div>
+                    
+                    <div class="review-progress">
+                        <div id="reviewProgressText">0/0</div>
+                        <div class="review-progress-bar">
+                            <div id="reviewProgressFill" class="review-progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 表格模式 -->
+                <div id="tableMode">
+                    <div class="word-count" id="wordCount">加载中...</div>
+                    
+                    <div class="filters">
+                        <label for="sortBy">排序:</label>
+                        <select id="sortBy" class="select">
+                            <option value="learn_time">学习时间</option>
+                            <option value="review_count">复习次数</option>
+                            <option value="last_review_time">最后复习时间</option>
+                            <option value="word">单词</option>
+                        </select>
+                        
+                        <select id="sortOrder" class="select">
+                            <option value="desc">降序</option>
+                            <option value="asc">升序</option>
+                        </select>
+                        
+                        <label for="limitSelect">每页显示:</label>
+                        <select id="limitSelect" class="select">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="50" selected>50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    
+                    <div id="tableContainer">
+                        <div class="loading" id="loading">加载中...</div>
+                        <div class="empty-message" id="emptyMessage" style="display: none;">
+                            <p>暂无学习记录</p>
+                            <p>您可以通过以下方式添加学习记录：</p>
+                            <ol>
+                                <li>在"认识单词"页面学习单词</li>
+                                <li>在"单词填空"页面完成练习</li>
+                                <li>在"中文盲打"页面输入单词</li>
+                            </ol>
+                            <p>或者点击下面的按钮快速添加一些示例单词：</p>
+                            <button id="addSampleWordsBtn" class="btn">添加示例单词</button>
+                        </div>
+                        <table class="word-table" id="wordTable" style="display: none;">
+                            <thead>
+                                <tr>
+                                    <th>单词</th>
+                                    <th>中文释义</th>
+                                    <th>级别</th>
+                                    <th>复习次数</th>
+                                    <th>学习时间</th>
+                                    <th>最后复习</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="wordTableBody">
+                                <!-- 这里将由JavaScript填充 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="pagination" id="pagination">
+                        <button id="prevPageBtn" class="btn" disabled>上一页</button>
+                        <span id="pageInfo">第 1 页</span>
+                        <button id="nextPageBtn" class="btn" disabled>下一页</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <footer>
+            <p>&copy; 2025 英语练习应用</p>
+        </footer>
+        
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // 全局变量
+                let currentPage = 1;
+                let totalWords = 0;
+                let wordsPerPage = parseInt(document.getElementById('limitSelect').value);
+                let sortBy = document.getElementById('sortBy').value;
+                let sortOrder = document.getElementById('sortOrder').value;
+                let learnedWords = []; // 用于复习模式
+                let currentReviewIndex = 0;
+                
+                // 元素引用
+                const wordTable = document.getElementById('wordTable');
+                const wordTableBody = document.getElementById('wordTableBody');
+                const loading = document.getElementById('loading');
+                const emptyMessage = document.getElementById('emptyMessage');
+                const wordCount = document.getElementById('wordCount');
+                const pagination = document.getElementById('pagination');
+                const prevPageBtn = document.getElementById('prevPageBtn');
+                const nextPageBtn = document.getElementById('nextPageBtn');
+                const pageInfo = document.getElementById('pageInfo');
+                const limitSelect = document.getElementById('limitSelect');
+                const sortBySelect = document.getElementById('sortBy');
+                const sortOrderSelect = document.getElementById('sortOrder');
+                const clearAllBtn = document.getElementById('clearAllBtn');
+                const startReviewBtn = document.getElementById('startReviewBtn');
+                const reviewContainer = document.getElementById('reviewContainer');
+                const tableContainer = document.getElementById('tableContainer');
+                const reviewWord = document.getElementById('reviewWord');
+                const reviewMeaning = document.getElementById('reviewMeaning');
+                const reviewProgress = document.getElementById('reviewProgress');
+                const nextWordBtn = document.getElementById('nextWordBtn');
+                const prevWordBtn = document.getElementById('prevWordBtn');
+                const toggleMeaningBtn = document.getElementById('toggleMeaningBtn');
+                const exitReviewBtn = document.getElementById('exitReviewBtn');
+                const addSampleWordsBtn = document.getElementById('addSampleWordsBtn');
+                
+                // 初始加载
+                loadLearnedWords();
+                
+                // 事件监听器
+                limitSelect.addEventListener('change', function() {
+                    wordsPerPage = parseInt(this.value);
+                    currentPage = 1;
+                    loadLearnedWords();
+                });
+                
+                sortBySelect.addEventListener('change', function() {
+                    sortBy = this.value;
+                    currentPage = 1;
+                    loadLearnedWords();
+                });
+                
+                sortOrderSelect.addEventListener('change', function() {
+                    sortOrder = this.value;
+                    currentPage = 1;
+                    loadLearnedWords();
+                });
+                
+                prevPageBtn.addEventListener('click', function() {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        loadLearnedWords();
+                    }
+                });
+                
+                nextPageBtn.addEventListener('click', function() {
+                    if (currentPage * wordsPerPage < totalWords) {
+                        currentPage++;
+                        loadLearnedWords();
+                    }
+                });
+                
+                clearAllBtn.addEventListener('click', function() {
+                    if (confirm('确定要清空所有学习记录吗？此操作不可恢复！')) {
+                        clearAllLearnedWords();
+                    }
+                });
+                
+                // 复习模式事件监听器
+                startReviewBtn.addEventListener('click', function() {
+                    startReviewMode();
+                });
+                
+                prevWordBtn.addEventListener('click', function() {
+                    if (currentReviewIndex > 0) {
+                        currentReviewIndex--;
+                        showCurrentReviewWord();
+                    }
+                });
+                
+                nextWordBtn.addEventListener('click', function() {
+                    if (currentReviewIndex < learnedWords.length - 1) {
+                        currentReviewIndex++;
+                        showCurrentReviewWord();
+                    }
+                });
+                
+                toggleMeaningBtn.addEventListener('click', function() {
+                    toggleMeaning();
+                });
+                
+                exitReviewBtn.addEventListener('click', function() {
+                    exitReviewMode();
+                });
+                
+                // 添加示例单词按钮事件
+                addSampleWordsBtn.addEventListener('click', function() {
+                    addSampleWords();
+                });
+                
+                // 函数定义
+                function loadLearnedWords() {
+                    showLoading();
+                    
+                    const offset = (currentPage - 1) * wordsPerPage;
+                    const url = `/api/learned-words?limit=${wordsPerPage}&offset=${offset}&sort_by=${sortBy}&sort_order=${sortOrder}`;
+                    
+                    fetch(url)
+                        .then(response => response.json())
+                        .then(data => {
+                            hideLoading(); // 确保无论如何都隐藏加载提示
+                            
+                            if (data.success) {
+                                totalWords = data.total;
+                                learnedWords = data.words;
+                                
+                                updateWordCount();
+                                updatePagination();
+                                
+                                if (learnedWords.length === 0) {
+                                    showEmptyMessage();
+                                } else {
+                                    renderWordTable();
+                                }
+                            } else {
+                                console.error('获取学习记录失败:', data.message);
+                                alert('获取学习记录失败: ' + data.message);
+                                showEmptyMessage();
+                            }
+                        })
+                        .catch(error => {
+                            hideLoading(); // 确保错误时也隐藏加载提示
+                            console.error('获取学习记录出错:', error);
+                            alert('获取学习记录出错，请检查网络连接');
+                            showEmptyMessage();
+                        });
+                }
+                
+                function renderWordTable() {
+                    wordTableBody.innerHTML = '';
+                    
+                    learnedWords.forEach(word => {
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>${word.word}</td>
+                            <td>${word.meaning}</td>
+                            <td>${word.level || '未知'}</td>
+                            <td>${word.review_count}</td>
+                            <td>${formatDateTime(word.learn_time)}</td>
+                            <td>${formatDateTime(word.last_review_time)}</td>
+                            <td>
+                                <button class="delete-btn" data-id="${word.id}">删除</button>
+                            </td>
+                        `;
+                        
+                        wordTableBody.appendChild(row);
+                    });
+                    
+                    // 添加删除按钮事件
+                    document.querySelectorAll('.delete-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const wordId = this.getAttribute('data-id');
+                            deleteLearnedWord(wordId);
+                        });
+                    });
+                    
+                    hideLoading();
+                    wordTable.style.display = 'table';
+                    emptyMessage.style.display = 'none';
+                }
+                
+                function deleteLearnedWord(wordId) {
+                    if (confirm('确定要删除这条学习记录吗？')) {
+                        fetch(`/api/learned-word/${wordId}`, {
+                            method: 'DELETE'
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    loadLearnedWords(); // 重新加载数据
+                                } else {
+                                    alert('删除失败: ' + data.message);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('删除出错:', error);
+                                alert('删除出错，请检查网络连接');
+                            });
+                    }
+                }
+                
+                function clearAllLearnedWords() {
+                    fetch('/api/learned-words/clear', {
+                        method: 'DELETE'
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                loadLearnedWords(); // 重新加载数据
+                            } else {
+                                alert('清空失败: ' + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('清空出错:', error);
+                            alert('清空出错，请检查网络连接');
+                        });
+                }
+                
+                function updateWordCount() {
+                    wordCount.textContent = `共 ${totalWords} 个学习记录`;
+                }
+                
+                function updatePagination() {
+                    const totalPages = Math.ceil(totalWords / wordsPerPage);
+                    pageInfo.textContent = `第 ${currentPage} 页 / 共 ${totalPages} 页`;
+                    
+                    prevPageBtn.disabled = currentPage <= 1;
+                    nextPageBtn.disabled = currentPage >= totalPages;
+                }
+                
+                function showLoading() {
+                    loading.style.display = 'block';
+                    wordTable.style.display = 'none';
+                    emptyMessage.style.display = 'none';
+                }
+                
+                function hideLoading() {
+                    loading.style.display = 'none';
+                }
+                
+                function showEmptyMessage() {
+                    hideLoading();
+                    wordTable.style.display = 'none';
+                    emptyMessage.style.display = 'block';
+                }
+                
+                function formatDateTime(dateTimeStr) {
+                    if (!dateTimeStr) return '未知';
+                    return dateTimeStr;
+                }
+                
+                // 复习模式函数
+                function startReviewMode() {
+                    // 先获取所有学习记录
+                    fetch(`/api/learned-words?limit=1000&offset=0&sort_by=review_count&sort_order=asc`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success && data.words.length > 0) {
+                                learnedWords = data.words;
+                                currentReviewIndex = 0;
+                                
+                                // 切换到复习模式
+                                tableMode.style.display = 'none';
+                                reviewMode.style.display = 'block';
+                                toggleTableBtn.textContent = '查看学习记录';
+                                startReviewBtn.style.display = 'none';
+                                
+                                // 显示第一个单词
+                                showCurrentReviewWord();
+                            } else {
+                                alert('没有可复习的单词，请先学习一些单词');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('获取复习单词出错:', error);
+                            alert('获取复习单词出错，请检查网络连接');
+                        });
+                }
+                
+                function exitReviewMode() {
+                    tableMode.style.display = 'block';
+                    reviewMode.style.display = 'none';
+                    toggleTableBtn.textContent = '开始复习';
+                    startReviewBtn.style.display = 'inline-block';
+                }
+                
+                function showCurrentReviewWord() {
+                    if (learnedWords.length === 0 || currentReviewIndex < 0 || currentReviewIndex >= learnedWords.length) {
+                        return;
+                    }
+                    
+                    const word = learnedWords[currentReviewIndex];
+                    reviewWord.textContent = word.word;
+                    reviewMeaning.textContent = word.meaning;
+                    reviewMeaning.style.display = 'none'; // 默认隐藏中文意思
+                    showMeaningBtn.textContent = '显示中文';
+                    
+                    // 更新信息
+                    reviewInfo.textContent = `级别: ${word.level || '未知'} | 复习次数: ${word.review_count} | 最后复习: ${formatDateTime(word.last_review_time)}`;
+                    
+                    // 更新进度
+                    updateReviewProgress();
+                    
+                    // 更新按钮状态
+                    prevWordBtn.disabled = currentReviewIndex <= 0;
+                    nextWordBtn.disabled = currentReviewIndex >= learnedWords.length - 1;
+                    
+                    // 记录这次复习
+                    updateReviewCount(word.id);
+                }
+                
+                function updateReviewProgress() {
+                    const progress = `${currentReviewIndex + 1} / ${learnedWords.length}`;
+                    reviewProgressText.textContent = progress;
+                    
+                    const percentage = ((currentReviewIndex + 1) / learnedWords.length) * 100;
+                    reviewProgressFill.style.width = `${percentage}%`;
+                }
+                
+                function toggleMeaning() {
+                    if (reviewMeaning.style.display === 'none') {
+                        reviewMeaning.style.display = 'block';
+                        showMeaningBtn.textContent = '隐藏中文';
+                    } else {
+                        reviewMeaning.style.display = 'none';
+                        showMeaningBtn.textContent = '显示中文';
+                    }
+                }
+                
+                function updateReviewCount(wordId) {
+                    // 更新复习次数
+                    fetch(`/api/learned-word`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            word: learnedWords[currentReviewIndex].word,
+                            meaning: learnedWords[currentReviewIndex].meaning,
+                            level: learnedWords[currentReviewIndex].level
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // 更新本地数据
+                            learnedWords[currentReviewIndex].review_count = data.review_count;
+                            learnedWords[currentReviewIndex].last_review_time = new Date().toISOString().replace('T', ' ').substring(0, 19);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('更新复习次数出错:', error);
+                    });
+                }
+                
+                function addSampleWords() {
+                    // 添加示例单词
+                    const sampleWords = [
+                        { word: 'apple', meaning: '苹果', level: '初级' },
+                        { word: 'banana', meaning: '香蕉', level: '初级' },
+                        { word: 'orange', meaning: '橙子', level: '初级' },
+                        { word: 'grape', meaning: '葡萄', level: '初级' },
+                        { word: 'pear', meaning: '梨子', level: '初级' }
+                    ];
+                    
+                    let addedCount = 0;
+                    showLoading();
+                    
+                    const addNextWord = (index) => {
+                        if (index >= sampleWords.length) {
+                            // 所有单词添加完成
+                            alert(`成功添加了 ${addedCount} 个示例单词！`);
+                            loadLearnedWords(); // 重新加载单词列表
+                            return;
+                        }
+                        
+                        const word = sampleWords[index];
+                        fetch('/api/learned-word', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(word)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log(`添加示例单词 "${word.word}" 成功`);
+                                addedCount++;
+                            } else {
+                                console.error(`添加示例单词 "${word.word}" 失败: ${data.message}`);
+                            }
+                            // 添加下一个单词
+                            addNextWord(index + 1);
+                        })
+                        .catch(error => {
+                            console.error(`添加示例单词 "${word.word}" 出错: ${error}`);
+                            // 继续添加下一个单词
+                            addNextWord(index + 1);
+                        });
+                    };
+                    
+                    // 开始添加第一个单词
+                    addNextWord(0);
+                }
+            });
+        </script>
+    </body>
+</html>
