@@ -25,4 +25,4 @@ http://localhost:5000
 ## 技术栈
 - 后端：Flask (Python)
 - 前端：HTML, CSS, JavaScript
-- 数据库：MongoDB
+- 数据库：Mysql
